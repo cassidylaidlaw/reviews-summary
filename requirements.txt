@@ -1,1 +1,2 @@
 spacy>=1.6.0
+gensim>=1.0.0rc2

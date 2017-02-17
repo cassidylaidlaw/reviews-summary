@@ -3,8 +3,11 @@ import random
 import glob
 import gzip
 import logging
+import csv
 
 from reviews import spacy_nlp
+
+from gensim.models.doc2vec import LabeledSentence
 
 class Review(object):
     """
@@ -57,3 +60,20 @@ def reviews_in_directory(reviews_dir, sample = 1):
                 line = line.decode('utf-8')
                 if random.random() < sample:
                     yield json2review(eval(line))
+
+class ReviewsCorpus(object):
+    """
+    Iterable that yields TaggedSentences given a CSV file of sentences.
+    """
+    
+    def __init__(self, sents_fname):
+        self.sents_fname = sents_fname
+        
+    def __iter__(self):
+        with open(self.sents_fname, 'r') as sents_file:
+            sents_csv = csv.reader(sents_file)
+            next(sents_csv) # Ignore header
+            for rid, sent_index, tokens, overall, helpful in sents_csv:
+                labels = [rid + '_' + str(sent_index)] 
+                tokens = tokens.lower().split(' ')
+                yield LabeledSentence(words=tokens, tags=labels)   
