@@ -50,19 +50,19 @@
 
 		<div class="row" style="padding-top: 30px;">
                     <div class="col-xs-12 col-sm-3 col-md-3">
-                        {% if overall==-1 %}
+                        {% if overall== -1 %}
                             <img src=" {{ url_for('static', filename='sad.png') }}" class="img-responsive img-box img-thumbnail" style="height: 150px; width: auto">
                         {% elif  overall == 0%}
                             <img src=" {{url_for('static', filename='neutral.png') }}" class="img-responsive img-box img-thumbnail" style="height: 150px; width: auto">
                         {% else %}
-                            <img src=" {{url_for('static', filename='happy.png') }}" class="img-responsive img-box img-thumbnail" style="height: 150px; width: auto">
+                            <img src=" {{url_for('static', filename='smile.png') }}" class="img-responsive img-box img-thumbnail" style="height: 150px; width: auto">
                         {% endif %}
                     </div>
                     <div class="col-xs-12 col-sm-9 col-md-9">
                         <div class="list-group">
                             <div class="list-group-item">
                                 <div class="row-content">
-                                     {% for _ in range(num_stars) %}
+                                     {% for _ in range(1,6) %}
                                          <i class="fa fa-star" aria-hidden="true" style="font-size: 24px;"></i>
                                          {% endfor %}
                                 </div>
