@@ -1,0 +1,84 @@
+<html>
+<head>
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+
+    <!-- Optional theme -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/review.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/pages.css') }}">
+
+
+    <!-- Latest compiled and minified JavaScript -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+
+    <script src="{{ url_for('static', filename='js/parallax.js') }}"></script>
+</head>
+<body>
+<div id="main-content">
+    <!--<div class="row">-->
+        <!--<div class="col-md-5">-->
+            <!--<h4><b>Item: </b>{{ item_name }}</h4>-->
+        <!--</div>-->
+    <!--</div>-->
+    <!--<div class="row">-->
+        <!--<div class="col-md-5">-->
+            <!--<h4><b>Overall: </b>{{ overall }}</h4>-->
+        <!--</div>-->
+    <!--</div>-->
+    <!--<div class="row">-->
+        <!--<div class="col-md-5">-->
+            <!--<h4><b>Reviews</b></h4>-->
+        <!--</div>-->
+    <!--</div>-->
+    <!--{% for review in reviews %}-->
+        <!--<div class="row">-->
+            <!--<div class = "col-md-6">-->
+                <!--<i><b>{{ review[0] }}</b></i> - similar things were said by {{ review[1] }} people-->
+            <!--</div>-->
+        <!--</div>-->
+    <!--{% endfor %}-->
+
+
+<div class="container">
+	<div class="row">
+    <h4><b>Item: </b>{{ item_name }}</h4>
+            {% for review in reviews %}
+
+		<div class="row" style="padding-top: 30px;">
+                    <div class="col-xs-12 col-sm-3 col-md-3">
+                        {% if overall==-1 %}
+                            <img src=" {{ url_for('static', filename='sad.png') }}" class="img-responsive img-box img-thumbnail" style="height: 150px; width: auto">
+                        {% elif  overall == 0%}
+                            <img src=" {{url_for('static', filename='neutral.png') }}" class="img-responsive img-box img-thumbnail" style="height: 150px; width: auto">
+                        {% else %}
+                            <img src=" {{url_for('static', filename='happy.png') }}" class="img-responsive img-box img-thumbnail" style="height: 150px; width: auto">
+                        {% endif %}
+                    </div>
+                    <div class="col-xs-12 col-sm-9 col-md-9">
+                        <div class="list-group">
+                            <div class="list-group-item">
+                                <div class="row-content">
+                                     {% for _ in range(num_stars) %}
+                                         <i class="fa fa-star" aria-hidden="true" style="font-size: 24px;"></i>
+                                         {% endfor %}
+                                </div>
+                            </div>
+                        </div>
+                        <h4><i><b>{{ review[0] }}</b></i> - similar things were said by {{ review[1] }} people</h4>
+                        <p>Naturally, we know where Bali's newest restaurants are and what to order, so give that private chef a rest and check out these spanking new haunts.</p>
+                    </div>
+                </div>
+                <hr>
+
+        {% endfor %}
+	</div>
+</div>
+
+</div>
+
+</body>
+</html>
