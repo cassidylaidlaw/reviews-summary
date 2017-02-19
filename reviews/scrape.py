@@ -44,7 +44,7 @@ def scrape_reviews_from_url(url):
             review_date = datetime.strptime(date_text, '%B %d, %Y')
             
             reviews.append(Review(body, summary, overall, helpful,
-                                  review_date))
+                                  review_date, len(reviews)))
             
         next_buttons = reviews_soup.select('#cm_cr-pagination_bar .a-last')
         if len(next_buttons) > 0:

@@ -60,6 +60,15 @@ class Review(object):
         
         self.doc = spacy_nlp(self.text)
         
+    def __eq__(self, other):
+        return self.id == other.id
+    
+    def __hash__(self):
+        return hash(self.id)
+    
+    def get_tokens(self):
+        return list(map(str, list(self.doc) + list(spacy_nlp(self.summary))))
+        
     def to_json(self):
         return {'text': self.text, 'summary': self.summary,
                 'overall': self.overall, 'helpful': list(self.helpful),
