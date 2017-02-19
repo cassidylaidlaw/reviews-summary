@@ -3,3 +3,4 @@ gensim>=1.0.0rc2
 nltk>=3.2.2
 requests>=2.13.0
 beautifulsoup4>=4.5.3
+flask>=0.12

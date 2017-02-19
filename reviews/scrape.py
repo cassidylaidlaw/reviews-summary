@@ -52,7 +52,7 @@ def scrape_reviews_from_url(url):
             if next_a is not None:
                 next_link = next_a['href']
             else:
-                next_link = None
+                next_link = None    
         else:
             next_link = None
             

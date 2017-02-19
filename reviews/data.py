@@ -31,6 +31,10 @@ class Phrase(object):
         """
         self.vector = doc2vec.infer_vector(self.tokens, alpha=doc2vec.alpha,
                                            steps=100)
+        
+    def to_json(self):
+        return {'text': ' '.join(self.tokens), 'tokens': self.tokens,
+                'review': self.review.to_json()}
 
 class Review(object):
     """
@@ -55,6 +59,11 @@ class Review(object):
         self.review_time = review_time
         
         self.doc = spacy_nlp(self.text)
+        
+    def to_json(self):
+        return {'text': self.text, 'summary': self.summary,
+                'overall': self.overall, 'helpful': list(self.helpful),
+                'review_time': self.review_time}
         
 Sentence = namedtuple('Sentence', ['tokens', 'review'])
 
