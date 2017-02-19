@@ -4,24 +4,24 @@ import glob
 import gzip
 import logging
 import csv
+from collections import namedtuple
 
-from reviews import spacy_nlp
+from reviews import spacy_nlp, stanford_parser
 
 from gensim.models.doc2vec import LabeledSentence
+from nltk.tree import Tree
 
 class Phrase(object):
     """
     Represents a phrase somebody used in a review.
     """
     
-    def __init__(self, tokens, span, review):
+    def __init__(self, tokens, review):
         """
         Creates a new Phrase with the given data. tokens is a list of spaCy
-        tokens, span is the span object indicating where it appeared in the
-        review, and review is the review the phrase came from.
+        tokens and review is the review the phrase came from.
         """
         self.tokens = tokens
-        self.span = span
         self.review = review
     
     def infer_vector(self, doc2vec, steps=100):
@@ -55,6 +55,43 @@ class Review(object):
         self.review_time = review_time
         
         self.doc = spacy_nlp(self.text)
+        
+Sentence = namedtuple('Sentence', ['tokens', 'review'])
+
+def extract_phrases(tree, labels={'S', 'SBAR'}):
+    """
+    Given a parse tree, extracts all phrases that occur under the given labels
+    and yields them as lists of tokens.
+    """
+    
+    if isinstance(tree, Tree):
+        if tree.label() in labels:
+            yield list(tree.flatten())
+        for subtree in tree:
+            for phrase in extract_phrases(subtree, labels):
+                yield phrase
+        
+def reviews_to_phrases(reviews):
+    """
+    Given a list of reviews, returns a list of all the phrases they contain.
+    """
+    
+    sentences = []
+    for review in reviews:
+        sentences.append(Sentence(list(map(str, spacy_nlp(review.summary))),
+                                  review))
+        for sent in review.doc.sents:
+            sentences.append(Sentence(list(map(str, sent)), review))
+    
+    parses = stanford_parser.parse_sents([sent.tokens for sent in sentences])
+    phrases = []
+    for trees, sentence in zip(parses, sentences):
+        trees = list(trees)
+        parse = trees[0]
+        for phrase_tokens in extract_phrases(parse):
+            phrases.append(Phrase(phrase_tokens, sentence.review))
+    
+    return phrases
     
 def json2review(json_dict):
     """
