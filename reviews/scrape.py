@@ -15,8 +15,15 @@ def scrape_reviews_from_url(url):
     reviews = []
     
     product_page = requests.get(url)
+    print(product_page.content)
     product_soup = BeautifulSoup(product_page.content, 'html.parser')
-    next_link = product_soup.find(id='dp-summary-see-all-reviews')['href']
+    try:
+        next_link = product_soup.find(id='dp-summary-see-all-reviews')['href']
+    except TypeError:
+        try:
+            next_link = product_soup.select('#revSum .a-link-emphasis')[0]['href']
+        except IndexError:
+            next_link = product_soup.find(class_='product-reviews-link')['href']
     while next_link is not None:
         time.sleep(random.random())
         next_link = 'https://www.amazon.com' + next_link
