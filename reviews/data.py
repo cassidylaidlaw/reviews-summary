@@ -3,8 +3,34 @@ import random
 import glob
 import gzip
 import logging
+import csv
 
 from reviews import spacy_nlp
+
+from gensim.models.doc2vec import LabeledSentence
+
+class Phrase(object):
+    """
+    Represents a phrase somebody used in a review.
+    """
+    
+    def __init__(self, tokens, span, review):
+        """
+        Creates a new Phrase with the given data. tokens is a list of spaCy
+        tokens, span is the span object indicating where it appeared in the
+        review, and review is the review the phrase came from.
+        """
+        self.tokens = tokens
+        self.span = span
+        self.review = review
+    
+    def infer_vector(self, doc2vec, steps=100):
+        """
+        Infer a vector representation for this phrase using the given doc2vec
+        model.
+        """
+        self.vector = doc2vec.infer_vector(self.tokens, alpha=doc2vec.alpha,
+                                           steps=100)
 
 class Review(object):
     """
@@ -57,3 +83,20 @@ def reviews_in_directory(reviews_dir, sample = 1):
                 line = line.decode('utf-8')
                 if random.random() < sample:
                     yield json2review(eval(line))
+
+class ReviewsCorpus(object):
+    """
+    Iterable that yields TaggedSentences given a CSV file of sentences.
+    """
+    
+    def __init__(self, sents_fname):
+        self.sents_fname = sents_fname
+        
+    def __iter__(self):
+        with open(self.sents_fname, 'r') as sents_file:
+            sents_csv = csv.reader(sents_file)
+            next(sents_csv) # Ignore header
+            for rid, sent_index, tokens, overall, helpful in sents_csv:
+                labels = [rid + '_' + str(sent_index)] 
+                tokens = tokens.lower().split(' ')
+                yield LabeledSentence(words=tokens, tags=labels)   
